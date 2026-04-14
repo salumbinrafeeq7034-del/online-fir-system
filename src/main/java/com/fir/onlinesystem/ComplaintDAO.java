@@ -30,10 +30,6 @@ public class ComplaintDAO {
             return false;
         }
     }
-    // Make sure you have these imports at the very top of the file!
-    // import java.util.ArrayList;
-    // import java.util.List;
-    // import java.sql.ResultSet;
 
     public List<Complaint> getAllComplaints() {
         List<Complaint> list = new ArrayList<>();
