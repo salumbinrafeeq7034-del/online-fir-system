@@ -14,13 +14,17 @@ public class AppController {
     // Connects to your database logic
     UserDAO userDAO = new UserDAO();
     ComplaintDAO complaintDAO = new ComplaintDAO();
-    // --- 0. HOME ROUTE ---
-
+    // --- 0. HOME ROUTE (Redirects straight to Login) ---
+    @GetMapping("/")
+    public String showHomePage() {
+        // This tells Spring Boot: "If they visit the main link, instantly forward them to /login"
+        return "redirect:/login"; 
+    }
 
     // --- 1. LOGIN ROUTES ---
     @GetMapping("/login")
     public String showLoginPage() {
-        return "login"; 
+        return "login"; // This will load your login.html file from the templates folder
     }
 
     @PostMapping("/processLogin")
