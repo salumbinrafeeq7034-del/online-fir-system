@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Police Admin - FIR Records</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; }
+        .admin-container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 1000px; margin: auto; }
+        h2 { color: #333; text-align: center; }
+        
+        .filter-bar { display: flex; gap: 15px; margin-bottom: 20px; background: #e9ecef; padding: 15px; border-radius: 5px; }
+        .filter-bar select { padding: 8px; border-radius: 4px; border: 1px solid #ccc; width: 100%;}
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #0056b3; color: white; }
+        tr:hover { background-color: #f1f1f1; }
+        .status-badge { font-weight: bold; color: #0056b3; }
+        
+        .update-select { padding: 5px; border-radius: 4px; }
+        .logout { text-align: center; margin-top: 20px; }
+        .logout a { color: #dc3545; text-decoration: none; font-weight: bold; padding: 10px 20px; border: 1px solid #dc3545; border-radius: 4px;}
+        .logout a:hover { background-color: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <h2>Official FIR Records</h2>
+    
+    <div class="filter-bar">
+        <div style="flex: 1;">
+            <label><strong>Filter by Status:</strong></label>
+            <select id="statusFilter" onchange="filterTable()">
+                <option value="All">All Cases</option>
+                <option value="Pending">Pending</option>
+                <option value="Under Investigation">Under Investigation</option>
+                <option value="Solved">Solved</option>
+            </select>
+        </div>
+        <div style="flex: 1;">
+            <label><strong>Filter by Category:</strong></label>
+            <select id="categoryFilter" onchange="filterTable()">
+                <option value="All">All Types</option>
+                <option value="Theft">Theft</option>
+                <option value="Assault">Assault</option>
+                <option value="Cybercrime">Cybercrime</option>
+                <option value="Fraud">Fraud</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+    </div>
+    
+    <table id="firTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Location</th>
+                <th>Description</th>
+                <th>Current Status</th>
+                <th>Update Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="c : ${complaints}">
+                <td th:text="${c.id}"></td>
+                <td th:text="${c.category}"></td>
+                <td th:text="${c.location}"></td>
+                <td th:text="${c.description}"></td>
+                <td th:text="${c.status}" class="status-badge"></td>
+                <td>
+                    <form action="/updateStatus" method="POST" style="margin: 0;">
+                        <input type="hidden" name="id" th:value="${c.id}" />
+                        <select name="status" class="update-select" onchange="this.form.submit()">
+                            <option value="Pending" th:selected="${c.status == 'Pending'}">Pending</option>
+                            <option value="Under Investigation" th:selected="${c.status == 'Under Investigation'}">Under Investigation</option>
+                            <option value="Solved" th:selected="${c.status == 'Solved'}">Solved</option>
+                        </select>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(complaints)}">
+                <td colspan="6" style="text-align: center; color: gray;">No FIRs have been filed yet.</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="logout">
+        <a href="/login">Logout Admin</a>
+    </div>
+</div>
+
+<script>
+    function filterTable() {
+        var statusFilter = document.getElementById("statusFilter").value;
+        var categoryFilter = document.getElementById("categoryFilter").value;
+        var table = document.getElementById("firTable");
+        var trs = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+        for (var i = 0; i < trs.length; i++) {
+            if (trs[i].cells.length < 6) continue;
+
+            var category = trs[i].cells[1].innerText || trs[i].cells[1].textContent;
+            var status = trs[i].cells[4].innerText || trs[i].cells[4].textContent;
+
+            var matchStatus = (statusFilter === "All" || status === statusFilter);
+            var matchCategory = (categoryFilter === "All" || category === categoryFilter);
+
+            if (matchStatus && matchCategory) {
+                trs[i].style.display = ""; 
+            } else {
+                trs[i].style.display = "none"; 
+            }
+        }
+    }
+</script>
+
+</body>
+</html>

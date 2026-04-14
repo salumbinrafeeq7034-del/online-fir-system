@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Citizen Dashboard - File FIR</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .dashboard-container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 400px; }
+        h2 { color: #333; text-align: center; }
+        label { font-weight: bold; margin-top: 10px; display: block; color: #555;}
+        select, input[type="text"], textarea { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: inherit;}
+        button { background-color: #28a745; color: white; padding: 12px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold;}
+        button:hover { background-color: #218838; }
+        .logout { text-align: center; margin-top: 15px; }
+        .logout a { color: #dc3545; text-decoration: none; font-weight: bold;}
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <h2>File a Complaint (FIR)</h2>
+    <div th:if="${param.success}" style="color: green; text-align: center; font-weight: bold; margin-bottom: 15px;">
+        FIR Submitted Successfully!
+    </div>
+    
+    <div th:if="${param.error}" style="color: red; text-align: center; font-weight: bold; margin-bottom: 15px;">
+        Error submitting FIR. Please try again.
+    </div>
+    
+    <form action="/fileComplaint" method="POST">
+        
+        <label>Category:</label>
+        <select name="category">
+            <option value="Theft">Theft</option>
+            <option value="Assault">Assault</option>
+            <option value="Cybercrime">Cybercrime</option>
+            <option value="Fraud">Fraud</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <label>Location:</label>
+        <input type="text" name="location" placeholder="Where did it happen?" required>
+
+        <label>Description:</label>
+        <textarea name="description" rows="4" placeholder="Describe the incident..." required></textarea>
+
+        <button type="submit">Submit FIR</button>
+    </form>
+    
+    <div class="logout">
+        <a href="/login">Logout</a>
+    </div>
+</div>
+
+</body>
+</html>
