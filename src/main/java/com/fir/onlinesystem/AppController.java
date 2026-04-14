@@ -14,6 +14,8 @@ public class AppController {
     // Connects to your database logic
     UserDAO userDAO = new UserDAO();
     ComplaintDAO complaintDAO = new ComplaintDAO();
+    // --- 0. HOME ROUTE ---
+
 
     // --- 1. LOGIN ROUTES ---
     @GetMapping("/login")
