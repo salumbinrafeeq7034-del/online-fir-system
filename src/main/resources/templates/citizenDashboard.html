@@ -3,55 +3,112 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Citizen Dashboard - File FIR</title>
+    <title>Online FIR / Complaint Filing System</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .dashboard-container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 400px; }
-        h2 { color: #333; text-align: center; }
-        label { font-weight: bold; margin-top: 10px; display: block; color: #555;}
-        select, input[type="text"], textarea { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: inherit;}
-        button { background-color: #28a745; color: white; padding: 12px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold;}
-        button:hover { background-color: #218838; }
+ /* CSS Styling */
+        :root {
+            --primary-color: #0f766e;
+            --secondary-color: #0f867e;
+            --bg-color: #ecfeff;
+            --text-color: #2d3748;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .login-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea.form-control {
+            resize: vertical;
+            height: 100px;
+        }
+        
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
         .logout { text-align: center; margin-top: 15px; }
         .logout a { color: #dc3545; text-decoration: none; font-weight: bold;}
     </style>
 </head>
 <body>
 
-<div class="dashboard-container">
-    <h2>File a Complaint (FIR)</h2>
-    <div th:if="${param.success}" style="color: green; text-align: center; font-weight: bold; margin-bottom: 15px;">
-        FIR Submitted Successfully!
-    </div>
-    
-    <div th:if="${param.error}" style="color: red; text-align: center; font-weight: bold; margin-bottom: 15px;">
-        Error submitting FIR. Please try again.
-    </div>
-    
-    <form action="/fileComplaint" method="POST">
-        
-        <label>Category:</label>
-        <select name="category">
-            <option value="Theft">Theft</option>
-            <option value="Assault">Assault</option>
-            <option value="Cybercrime">Cybercrime</option>
-            <option value="Fraud">Fraud</option>
-            <option value="Other">Other</option>
-        </select>
-
-        <label>Location:</label>
-        <input type="text" name="location" placeholder="Where did it happen?" required>
-
-        <label>Description:</label>
-        <textarea name="description" rows="4" placeholder="Describe the incident..." required></textarea>
-
-        <button type="submit">Submit FIR</button>
-    </form>
-    
-    <div class="logout">
-        <a href="/login">Logout</a>
-    </div>
-</div>
-
+    <header>
+        <h2>⚖️ Online FIR System</h2>
+    </header>
+      <div id="citizen-view" class="card">
+                <h3>File a New Complaint (FIR)</h3>
+                <form action="/fileComplaint" method="POST" onsubmit="alert('FIR Generated Successfully!');" >
+                    <div class="form-group">
+                        <label>Complaint Category / Type</label>
+                        <select class="form-control" name="category" required>
+                            <option value="">Select Category...</option>
+                            <option value="Theft">Theft / Robbery</option>
+                            <option value="Cybercrime">Cybercrime</option>
+                            <option value="Assault">Assault</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Location of Incident</label>
+                        <input type="text" class="form-control" placeholder="Enter full address/location"  name="location" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Complaint Description</label>
+                        <textarea class="form-control" placeholder="Provide detailed information about the incident..."  name="description" rows="4" required></textarea>
+                    </div>
+                    <button type="submit">Submit Complaint</button>
+                </form>
+              <div class="logout">
+                      <a href="/login" style="font:arial" >Logout</a>
+              </div>
+     </div>
 </body>
 </html>
