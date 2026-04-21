@@ -11,25 +11,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class AppController {
 
-    // Connects to your database logic
     UserDAO userDAO = new UserDAO();
     ComplaintDAO complaintDAO = new ComplaintDAO();
-    // --- 0. HOME ROUTE (Redirects straight to Login) ---
+
+    // --- 0. HOME ROUTE ---
     @GetMapping("/")
     public String showHomePage() {
-        // This tells Spring Boot: "If they visit the main link, instantly forward them to /login"
         return "redirect:/login"; 
     }
 
     // --- 1. LOGIN ROUTES ---
     @GetMapping("/login")
     public String showLoginPage() {
-        return "login"; // This will load your login.html file from the templates folder
+        return "login"; 
     }
 
     @PostMapping("/processLogin")
-    public String processLogin(@RequestParam String username, @RequestParam String password) {
-        String role = userDAO.login(username, password);
+    public String processLogin(@RequestParam String username,@RequestParam String email, @RequestParam String password) {
+        String role = userDAO.login(username, email, password);
         if (role != null) {
             if (role.equals("Admin")) {
                 return "redirect:/adminDashboard"; 
@@ -54,49 +53,41 @@ public class AppController {
     }
 
     @PostMapping("/processRegistration")
-    public String processRegistration(@RequestParam String username, @RequestParam String password) {
-        boolean success = userDAO.registerCitizen(username, password);
+    public String processRegistration(@RequestParam String username,@RequestParam String email, @RequestParam String password) {
+        boolean success = userDAO.registerCitizen(username, email, password);
         if (success) {
             return "redirect:/login"; 
         } else {
             return "redirect:/register?error=true"; 
         }
     }
+
     // --- 4. FILE COMPLAINT ROUTE ---
     @PostMapping("/fileComplaint")
-    public String processComplaint(@RequestParam String category, 
+    public String processComplaint(@RequestParam String username,
+                                   @RequestParam String category, 
                                    @RequestParam String location, 
-                                   @RequestParam String description) {
-        
-        // Send the data to the database
+                                   @RequestParam String description ){
         boolean success = complaintDAO.addComplaint(category, location, description);
-        
         if (success) {
-            // Refresh the dashboard and add a success flag to the URL
             return "redirect:/citizenDashboard?success=true"; 
         } else {
             return "redirect:/citizenDashboard?error=true"; 
         }
     }
+
     // --- 5. ADMIN DASHBOARD ROUTE ---
     @GetMapping("/adminDashboard")
     public String showAdminDashboard(Model model) {
-        // 1. Get all complaints from the database
         List<Complaint> allComplaints = complaintDAO.getAllComplaints();
-        
-        // 2. Attach the list to the HTML page under the name "complaints"
         model.addAttribute("complaints", allComplaints);
-        
-        // 3. Load the adminDashboard.html page
         return "adminDashboard";
     }
+
     // --- 6. UPDATE STATUS ROUTE ---
     @PostMapping("/updateStatus")
     public String updateStatus(@RequestParam int id, @RequestParam String status) {
-        // Send the update to the database
         complaintDAO.updateComplaintStatus(id, status);
-        
-        // Refresh the admin dashboard so they see the new status instantly
         return "redirect:/adminDashboard";
     }
 }
